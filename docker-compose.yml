@@ -1,0 +1,20 @@
+version: '3'
+
+
+services:
+  db:
+    image: postgres:11.6-alpine
+    environment:
+      - POSTGRES_DB=target_django
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  web:
+    build: .
+    command: pipenv run python manage.py migrate
+    command: pipenv run python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
