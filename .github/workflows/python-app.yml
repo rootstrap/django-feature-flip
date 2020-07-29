@@ -1,0 +1,38 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python application
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:11.6-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: install resources
+      run: |
+          apt-get --yes --force-yes update && apt-get --yes --force-yes install binutils libproj-dev gdal-bin
+          # install pipenv
+          pip install pipenv
+    - name: Install dependencies
+      run: |
+        pipenv install --dev
+    - name: Test with pytest
+      run: |
+        pipenv run python manage.py test
