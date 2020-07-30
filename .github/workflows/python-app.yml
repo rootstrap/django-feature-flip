@@ -33,6 +33,9 @@ jobs:
     - name: Install dependencies
       run: |
         pipenv install --dev
-    - name: Test with pytest
+    - name: Code style check
+      run: |
+        pipenv run flake8
+    - name: Test
       run: |
         pipenv run python manage.py test
