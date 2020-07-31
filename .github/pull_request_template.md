@@ -1,6 +1,6 @@
 ## Issue Title
 
-#Closes [issue-number]
+## Closes #[issue-number]
 
 #### Description
 
