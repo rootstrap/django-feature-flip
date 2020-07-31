@@ -9,3 +9,4 @@ class FeatureFactory(factory.django.DjangoModelFactory):
 
     name = factory.Faker('name')
     totally_enabled = False
+    time_percentage = 0

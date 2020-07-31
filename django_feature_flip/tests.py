@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.db import DataError, IntegrityError
 from django_feature_flip.factories import FeatureFactory
 from django_feature_flip.helpers import FeatureFlip
+from django.core.exceptions import ValidationError
 from unittest.mock import Mock
 
 
@@ -15,6 +16,14 @@ class FeatureTestCase(TestCase):
     def test_max_of_40_characters_of_name(self):
         with self.assertRaises(DataError):
             FeatureFactory(name='This is a very large name, features should have short names')
+
+    def test_min_of_0_validation_for_time_percentage(self):
+        with self.assertRaises(ValidationError):
+            FeatureFactory(time_percentage=-1).clean_fields()
+
+    def test_max_of_100_validation_for_time_percentage(self):
+        with self.assertRaises(ValidationError):
+            FeatureFactory(time_percentage=101).clean_fields()
 
 
 class FeatureFlipTestCase(TestCase):
@@ -47,7 +56,9 @@ class FeatureFlipTestCase(TestCase):
         try:
             self.feature_flip.enabled('non_existent_feature', actor)
         except FeatureFlip.FeatureFlipError as error:
-            self.assertEqual(error.message, 'Feature non_existent_feature does not exist')
+            self.assertEqual(
+                error.message, 'Feature non_existent_feature does not exist'
+            )
 
     def test_group_registration(self):
         FeatureFactory(name='my_feature', totally_enabled=False)
@@ -74,7 +85,9 @@ class FeatureFlipTestCase(TestCase):
         try:
             self.feature_flip.activate_group('non_existent_feature', 'my_group')
         except FeatureFlip.FeatureFlipError as error:
-            self.assertEqual(error.message, 'Feature non_existent_feature does not exist')
+            self.assertEqual(
+                error.message, 'Feature non_existent_feature does not exist'
+            )
 
     def test_activate_group_for_non_existent_group(self):
         FeatureFactory(name='my_feature')
@@ -83,3 +96,28 @@ class FeatureFlipTestCase(TestCase):
             self.feature_flip.activate_group('my_feature', 'non_existent_group')
         except FeatureFlip.FeatureFlipError as error:
             self.assertEqual(error.message, 'Group non_existent_group does not exist')
+
+    def test_enabled_for_totally_disabled_time_percentage(self):
+        FeatureFactory(name='time_percentage_feature', time_percentage=0)
+        actor = self._actor(1)
+
+        self.assertFalse(self.feature_flip.enabled('time_percentage_feature', actor))
+
+    def test_enabled_for_totally_enabled_time_percentage(self):
+        FeatureFactory(name='time_percentage_feature', time_percentage=100)
+        actor = self._actor(1)
+
+        self.assertTrue(self.feature_flip.enabled('time_percentage_feature', actor))
+
+    def test_enable_time_percentage(self):
+        feature = FeatureFactory(name='time_percentage_feature', time_percentage=10)
+        self.feature_flip.enable_time_percentage('time_percentage_feature', 20)
+
+        feature.refresh_from_db()
+        self.assertEqual(feature.time_percentage, 20)
+
+    def test_enable_with_invalid_time_percentage(self):
+        FeatureFactory(name='time_percentage_feature', time_percentage=10)
+
+        with self.assertRaises(ValidationError):
+            self.feature_flip.enable_time_percentage('time_percentage_feature', 200)
