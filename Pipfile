@@ -4,6 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+coverage = "==5.2.1"
 factory-boy = "==2.12.0"
 flake8 = "==3.8.3"
 
