@@ -42,6 +42,7 @@ jobs:
     - name: Code style check
       run: |
         pipenv run flake8
+        pipenv run pydocstyle .
 
     
     - name: Test
