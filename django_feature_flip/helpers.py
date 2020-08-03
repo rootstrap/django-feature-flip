@@ -1,4 +1,3 @@
-
 from django_feature_flip.models import Feature
 
 
@@ -9,6 +8,7 @@ class FeatureFlip:
 
         def __str__(self):
             return repr(self)
+
     instance = None
 
     def __init__(self):
