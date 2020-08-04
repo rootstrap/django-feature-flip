@@ -56,9 +56,7 @@ class FeatureFlipTestCase(TestCase):
         try:
             self.feature_flip.enabled('non_existent_feature', actor)
         except FeatureFlip.FeatureFlipError as error:
-            self.assertEqual(
-                error.message, 'Feature non_existent_feature does not exist'
-            )
+            self.assertEqual(error.message, 'Feature non_existent_feature does not exist')
 
     def test_group_registration(self):
         FeatureFactory(name='my_feature', totally_enabled=False)
@@ -85,9 +83,7 @@ class FeatureFlipTestCase(TestCase):
         try:
             self.feature_flip.activate_group('non_existent_feature', 'my_group')
         except FeatureFlip.FeatureFlipError as error:
-            self.assertEqual(
-                error.message, 'Feature non_existent_feature does not exist'
-            )
+            self.assertEqual(error.message, 'Feature non_existent_feature does not exist')
 
     def test_activate_group_for_non_existent_group(self):
         FeatureFactory(name='my_feature')
