@@ -45,3 +45,4 @@ plugins:
     enabled: true
     exclude_patterns:
       - .*/**/tests.py
+      - .*/**/migrations.py

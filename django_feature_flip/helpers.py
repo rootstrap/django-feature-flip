@@ -71,6 +71,4 @@ def get_group_or_raise_error(group_name):
 
 
 def in_time_percentage(feature):
-    return feature.time_percentage > 0 and feature.time_percentage > random.randint(
-        0, 100
-    )
+    return feature.time_percentage > 0 and feature.time_percentage > random.randint(0, 100)
