@@ -12,9 +12,7 @@ class Group(models.Model):
 class Feature(models.Model):
     name = models.CharField(max_length=40, unique=True, db_index=True, null=False)
     totally_enabled = models.BooleanField(default=False, null=False)
-    time_percentage = models.IntegerField(
-        default=0, validators=[MinValueValidator(0), MaxValueValidator(100)]
-    )
+    time_percentage = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     groups = models.ManyToManyField(Group, related_name='features')
 
     def __str__(self):
