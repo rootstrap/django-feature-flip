@@ -1,4 +1,3 @@
-
 from django_feature_flip.models import Group, Feature
 
 
