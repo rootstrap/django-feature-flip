@@ -23,7 +23,7 @@ jobs:
 
     env:
       DB_HOST: localhost
-      CC_TEST_REPORTER_ID: 4f7fcbfa9f2ea2c06422be7fe6460a001d2dbe230217b8130311a11d45c4c998
+      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
     steps:
     - uses: actions/checkout@v2
