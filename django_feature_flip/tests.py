@@ -14,9 +14,7 @@ class FeatureTestCase(TestCase):
 
     def test_max_of_40_characters_of_name(self):
         with self.assertRaises(DataError):
-            FeatureFactory(
-                name='This is a very large name, features should have short names'
-            )
+            FeatureFactory(name='This is a very large name, features should have short names')
 
 
 class FeatureFlipTestCase(TestCase):
