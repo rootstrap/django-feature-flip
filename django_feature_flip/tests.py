@@ -117,3 +117,32 @@ class FeatureFlipTestCase(TestCase):
 
         with self.assertRaises(ValidationError):
             self.feature_flip.enable_time_percentage('time_percentage_feature', 200)
+
+    def test_enable_actors_percentage_with_invalid_percentage(self):
+        feature = FeatureFactory(actors_percentage=10)
+
+        with self.assertRaises(ValidationError):
+            self.feature_flip.enable_actors_percentage(feature.name, 200)
+
+        with self.assertRaises(ValidationError):
+            self.feature_flip.enable_actors_percentage(feature.name, -1)
+
+    def test_enable_actors_percentage(self):
+        feature = FeatureFactory(actors_percentage=10)
+
+        self.feature_flip.enable_actors_percentage(feature.name, 20)
+        feature.refresh_from_db()
+
+        self.assertEqual(feature.actors_percentage, 20)
+
+    def test_enabled_for_actors_in_percentage(self):
+        feature = FeatureFactory(actors_percentage=100)
+        actors = [self._actor(flip_id) for flip_id in range(0, 100)]
+        for actor in actors:
+            self.assertTrue(FeatureFlip().enabled(feature.name, actor))
+
+    def test_enabled_for_actors_not_in_percentage(self):
+        feature = FeatureFactory(actors_percentage=0)
+        actors = [self._actor(flip_id) for flip_id in range(0, 100)]
+        for actor in actors:
+            self.assertFalse(FeatureFlip().enabled(feature.name, actor))
