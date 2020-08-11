@@ -1,4 +1,5 @@
 import random
+import zlib
 
 from django_feature_flip.models import Group, Feature
 
@@ -30,7 +31,10 @@ class FeatureFlip:
         if feature.totally_enabled or in_time_percentage(feature):
             return True
         elif actor:
-            return self.feature_enabled_for_a_group_of_actor(feature, actor)
+            return (
+                self.feature_enabled_for_a_group_of_actor(feature, actor) or
+                self.feature_enabled_for_actor(feature, actor)
+            )
         else:
             return False
 
@@ -48,9 +52,28 @@ class FeatureFlip:
         groups_names = [group.name for group in feature.group_set.all()]
         return any(self.groups[group_name](actor) for group_name in groups_names)
 
+    def feature_enabled_for_actor(self, feature, actor):
+        actors_percentage = feature.actors_percentage
+
+        if actors_percentage:
+            flip_id = actor.flip_id()
+            generated_id = str.encode(f"#{feature.name}#{flip_id}")
+            scaling_factor = 1_000
+            # this is to support up to 3 decimal places in percentages
+            return zlib.crc32(generated_id) % (100 * scaling_factor) < actors_percentage * scaling_factor
+        else:
+            return False
+
     def enable_time_percentage(self, feature_name, time_percentage):
         feature = Feature.objects.get(name=feature_name)
         feature.time_percentage = time_percentage
+        feature.clean_fields()
+
+        return feature.save()
+
+    def enable_actors_percentage(self, feature_name, actors_percentage):
+        feature = get_feature_or_raise_error(feature_name)
+        feature.actors_percentage = actors_percentage
         feature.clean_fields()
 
         return feature.save()
