@@ -25,12 +25,7 @@ class FeatureFlip:
     def enabled(self, feature_name, actor=None):
         feature = get_feature_or_raise_error(feature_name)
 
-        if feature.totally_enabled:
-            return True
-        elif actor:
-            return self.feature_enabled_for_a_group_of_actor(feature, actor)
-        else:
-            return False
+        return feature.totally_enabled or self.feature_enabled_for_actor(feature, actor)
 
     def register(self, group_name, func):
         Group.objects.get_or_create(name=group_name)
@@ -42,9 +37,20 @@ class FeatureFlip:
 
         get_group_or_raise_error(group_name).features.add(feature)
 
+    def feature_enabled_for_actor(self, feature, actor):
+        return actor and (
+            self.feature_enabled_for_a_group_of_actor(feature, actor) or feature.has_actor(actor.flip_id())
+        )
+
     def feature_enabled_for_a_group_of_actor(self, feature, actor):
         groups_names = [group.name for group in feature.group_set.all()]
         return any(self.groups[group_name](actor) for group_name in groups_names)
+
+    def enable_actor(self, feature_name, actor):
+        feature = Feature.objects.filter(name=feature_name).first()
+        flip_id = actor.flip_id()
+
+        return feature.add_actor(flip_id)
 
 
 def get_feature_or_raise_error(feature_name):
