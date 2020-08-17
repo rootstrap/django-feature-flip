@@ -43,7 +43,7 @@ class FeatureFlip:
         get_group_or_raise_error(group_name).features.add(feature)
 
     def feature_enabled_for_a_group_of_actor(self, feature, actor):
-        groups_names = [group.name for group in feature.group_set.all()]
+        groups_names = feature.group_names()
         return any(self.groups[group_name](actor) for group_name in groups_names)
 
 

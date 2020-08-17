@@ -6,6 +6,7 @@ class FeatureAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'totally_enabled',
+        'group_names',
     )
 
 
