@@ -53,9 +53,7 @@ class FeatureFlip:
         return any(self.groups[group_name](actor) for group_name in groups_names)
 
     def feature_enabled_for_actor(self, feature, actor):
-        actors_percentage = feature.actors_percentage
-
-        if actors_percentage:
+        if (actors_percentage := feature.actors_percentage):
             flip_id = actor.flip_id()
             generated_id = str.encode(f"#{feature.name}#{flip_id}")
             scaling_factor = 1_000
