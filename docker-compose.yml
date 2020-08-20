@@ -8,6 +8,24 @@ services:
       - POSTGRES_DB=target_django
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+  takion_middleware:
+    build: .
+    command: python3 takion_middleware.py
+    volumes:
+      - .:/code
+    ports:
+      - "9001:9001"
+  tunnel:
+    build: 
+      context: ./tunnel
+      dockerfile: Dockerfile
+    environment:
+       - FLASK_APP=./tunnel/tunnel.py
+    command: pipenv run flask run --host=0.0.0.0 -p 9002
+    volumes:
+      - .:/code
+    ports:
+      - "9002:9002"
   web:
     build: .
     command: pipenv run python manage.py migrate
@@ -18,3 +36,5 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    depends_on:
+      - tunnel
