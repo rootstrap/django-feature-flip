@@ -8,7 +8,7 @@ services:
       - POSTGRES_DB=target_django
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-  takion_middleware:
+  takion-middleware:
     build: .
     command: python3 takion_middleware.py
     volumes:
@@ -33,7 +33,7 @@ services:
     volumes:
       - .:/code
     ports:
-      - "8000:8000"
+      - "8001:8000"
     depends_on:
       - db
     depends_on:

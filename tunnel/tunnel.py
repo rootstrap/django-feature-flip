@@ -5,14 +5,14 @@ from flask import Flask
 app = Flask(__name__)
 
 
-@app.route('/')
-def hello_world():
-    takion_response = client('localhost', 9001, 'self.data')
-    return 'Hello, World!'
+@app.route('/', methods=['POST'])
+def connect_tunnel():
+    takion_response = client('takion-middleware', 9001, 'self.data')
+    return takion_response
 
 
 @app.route('/status')
-def hello_world():
+def status():
     return '{"online": True}'
 
 
