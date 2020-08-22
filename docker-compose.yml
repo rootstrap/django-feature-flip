@@ -21,7 +21,8 @@ services:
       dockerfile: Dockerfile
     environment:
        - FLASK_APP=./tunnel/tunnel.py
-    command: pipenv run flask run --host=0.0.0.0 -p 9002
+    # command: pipenv run flask run --host=0.0.0.0 -p 9002
+    command: pipenv run python ./tunnel/tunnel.py
     volumes:
       - .:/code
     ports:

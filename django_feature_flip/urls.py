@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django_feature_flip.views import status
+from django_feature_flip.views import status, middleware
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('status/', status),
+    path('middleware/', middleware),
 ]

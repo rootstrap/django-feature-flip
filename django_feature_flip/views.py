@@ -12,3 +12,13 @@ def status(request):
     print(r.status_code, r.text)
 
     return Response({"status": r.text})
+
+
+@api_view(['POST'])
+def middleware(request):
+    """
+    List all code snippets, or create a new snippet.
+    """
+    # r = requests.post('http://tunnel:9002/', data={'key': 'value'})
+    print(request.data.dict())
+    return Response({"status": 'ok'})
