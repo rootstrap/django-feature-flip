@@ -1,6 +1,5 @@
 # Echo server program
 import socket
-import time
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind(('0.0.0.0', 9001))
@@ -9,12 +8,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     with conn:
         print('Connected by', addr)
         while True:
-            data = conn.recv(1024)
-            print(f'received {data}')
-
-            json_string = '{"as":"asas"}'
-            stra = f"{json_string}\\n{json_string}\\n"
-            if not data:
-                break
-            conn.sendall(bytes(stra, 'ascii'))
-            time.sleep(5)
+            data = str(conn.recv(1024), 'UTF-8')
+            if (data):
+                print(f'received {data}')
+                js = "{\"as\":\"as\"}\n"
+                stra = f"{data}{js}"
+                conn.sendall(bytes(stra, 'UTF-8'))
